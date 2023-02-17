@@ -1,16 +1,26 @@
-from fastapi import FastAPI, APIRouter, status
+from fastapi import FastAPI, APIRouter, status, Depends
+from fastapi.middleware.cors import CORSMiddleware
+
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from models.schemas import SearchQuery
 from models.db_models import User
-
+from models.database import get_db
 
 app = FastAPI()
 
+origins = ["*"]
 
-@app.get('/query')
-async def get_notes(session: AsyncSession, search_query: SearchQuery):
-    result = User()
-    session.add(result)
-    session.rollback()
-    return 1
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.post('/')
+async def get_search_query(search_query: SearchQuery):
+    return search_query

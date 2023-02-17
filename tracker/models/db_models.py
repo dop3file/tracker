@@ -2,8 +2,10 @@ import datetime
 
 import bcrypt
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean
-from models.database import base as Base
+from sqlalchemy.sql import func
+from sqlalchemy.ext.declarative import declarative_base
 
+Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
@@ -12,7 +14,7 @@ class User(Base):
     login = Column(String)
     email = Column(String)
     password = Column(Text)
-    creation_date = Column(DateTime, default=datetime.datetime.utcnow)
+    creation_date = Column(DateTime, server_default=func.now())
 
     def verify_password(self, password):
         pwhash = bcrypt.hashpw(password, self.password)
