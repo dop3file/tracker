@@ -13,20 +13,26 @@
     <nav class="navbar navbar-light">
         <div class="container">
             <a class="navbar-brand"><h1>Tracker</h1></a>
-            <form class="form-inline" style="display: inline-flex;">
+            <form class="form-inline" style="display: inline-flex;" onsubmit="return false;">
                 <input id="search" class="form-control mr-sm-2" type="search" placeholder="Поиск.." aria-label="Search">
-                <button class="btn_search btn my-2 my-sm-0 btn-dark" type="button" onclick="getArtist()">Track it</button>
+                <button class="btn_search btn my-2 my-sm-0 btn-dark" type="submit" onclick="getArtist()">Track it</button>
             </form>
         </div>
     </nav>
 
     <div class="container">
         <main id="main">
+            <div class="hide-loader" id="loader"></div>
+            <div id="artist_profile">
 
+            </div>
+            
         </main>
     </div>
     
-    <script>is_local_values()</script>
+    <script>
+        is_local_values()
+    </script>
 
 
 </body>

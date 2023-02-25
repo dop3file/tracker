@@ -1,6 +1,6 @@
 import asyncio
 
-from fastapi import FastAPI, APIRouter, status, Depends
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,6 +12,7 @@ from models.database import get_db
 from controllers.services.genius import Genius
 
 import config
+import exceptions
 
 
 app = FastAPI()
@@ -30,6 +31,9 @@ genius = Genius(config.GENIUS_ACCESS_TOKEN)
 
 @app.post('/')
 async def get_search_query(search_query: SearchQuery):
-    artist_id = await genius.get_artist_id(search_query.artist_name)
-    artist = await genius.get_artist(artist_id)
+    try:
+        artist_id = await genius.get_artist_id(search_query.artist_name)
+        artist = await genius.get_artist(artist_id)
+    except exceptions.SearchInvalidException as error_msg:
+        return {"error": str(error_msg)}
     return artist.json()

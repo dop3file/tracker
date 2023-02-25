@@ -4,6 +4,8 @@ import aiohttp
 import controllers.services.utils
 from schemas.service_schemas import GeniusArtist
 import config as config
+from exceptions import SearchInvalidException
+
 
 class Genius:
     PAGE_LIMIT = 20
@@ -21,6 +23,7 @@ class Genius:
                 return True
         return False
 
+
     async def get_artist_id(self, artist_name: str) -> int:
         async with aiohttp.ClientSession() as session:
             url = "http://api.genius.com/search"
@@ -29,7 +32,7 @@ class Genius:
             async with session.get(url=url, params=request_params) as response:
                 data = await response.json()
                 if data["meta"]["status"] != 200:
-                    raise ValueError("Invalid search query")
+                    raise SearchInvalidException("Invalid search query")
                 
                 hits = data["response"]["hits"]
 
@@ -40,7 +43,10 @@ class Genius:
                         hit_without_feature = hit
                         break
                 else:
-                    hit_without_feature = hits[0]
+                    try:
+                        hit_without_feature = hits[0]
+                    except IndexError:
+                        raise SearchInvalidException("Invalid search query")
 
                 artist_id = hit_without_feature["result"]["primary_artist"]["id"]
                 return artist_id
@@ -51,9 +57,11 @@ class Genius:
             async with session.get(url=url, params=self.default_request_params) as response:
                 data = await response.json()
                 if data["meta"]["status"] != 200:
-                    raise ValueError("Invalid artist id")
+                    raise SearchInvalidException("Invalid search query")
                 
                 artist: dict = data["response"]["artist"]
+                if artist["image_url"].startswith('https://assets.genius.com/images/default_avatar'):
+                    raise SearchInvalidException("Invalid search query")
                 artist = GeniusArtist.parse_obj(artist)
                 return artist
  
