@@ -32,3 +32,13 @@ header {
 .navbar-brand {
     font-size: 72px;
 }
+
+.avatar {
+    width: 256px;
+    height: 256px;
+    border-radius: 150px;
+}
+
+#main {
+    margin-top: 3em;
+}
