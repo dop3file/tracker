@@ -7,18 +7,17 @@ import config as config
 from exceptions import SearchInvalidException
 
 
-class Genius:
-    PAGE_LIMIT = 20
+class GeniusAPI:
     FEATURE_SYMBOLS = [",", "&"]
 
-    def __init__(self, genius_token: str) -> None:
-        self._token = genius_token
+    def __init__(self, access_token: str) -> None:
+        self._token = access_token
         self.default_request_params = {
             'access_token': self._token
         }
         
     def is_featured_artist(self, artist_name: str) -> bool:
-        for feature_symbol in Genius.FEATURE_SYMBOLS:
+        for feature_symbol in GeniusAPI.FEATURE_SYMBOLS:
             if feature_symbol in artist_name:
                 return True
         return False

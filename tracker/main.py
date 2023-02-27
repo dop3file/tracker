@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from schemas.schemas import SearchQuery
 from models.db_models import User
 from models.database import get_db
-from controllers.services.genius import Genius
+from controllers.services.genius import GeniusAPI
 
 import config
 import exceptions
@@ -27,7 +27,7 @@ app.add_middleware(
     allow_headers=origins,
 )
 
-genius = Genius(config.GENIUS_ACCESS_TOKEN)
+genius = GeniusAPI(config.GENIUS_ACCESS_TOKEN)
 
 @app.post('/')
 async def get_search_query(search_query: SearchQuery):
