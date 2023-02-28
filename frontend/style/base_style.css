@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300&family=Ubuntu:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
 * {
-    font-family: 'Kanit', sans-serif;
+    font-family: 'Lato', sans-serif;
 }
 
 
@@ -37,6 +37,8 @@ header {
     width: 256px;
     height: 256px;
     border-radius: 150px;
+    border: 5px solid #F8FA90;
+    box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
 }
 
 #main {
@@ -60,4 +62,11 @@ header {
 
 .hide-loader{
     display:none;
+}
+
+#artist_profile {
+    background-color: rgba(157, 205, 192, 0.5);
+    padding: 1em;
+    border-radius: 20px;
+    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
 }
