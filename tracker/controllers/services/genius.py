@@ -63,9 +63,6 @@ class GeniusAPI:
                     raise SearchInvalidException("Invalid search query")
                 artist = GeniusArtist.parse_obj(artist)
                 return artist
- 
-
-
 
 
 

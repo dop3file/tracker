@@ -65,8 +65,39 @@ header {
 }
 
 #artist_profile {
+    display: grid;
+    grid-template-columns: 30% 70%;
     background-color: rgba(157, 205, 192, 0.5);
     padding: 1em;
     border-radius: 20px;
     box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+}
+
+.alternate_names {
+    font-style: italic;
+}
+
+.header_artist {
+    z-index: 0;
+    width: 100%;
+    margin: 0;
+}
+
+.social {
+    width: 80px;
+    height: 80px;
+    padding: 10px;
+}
+
+.spotify_tracks {
+    width: 30%;
+}
+
+.spotify_track {
+
+}
+
+.spotify_track > img{
+    width: 80px;
+    height: 80px;
 }
