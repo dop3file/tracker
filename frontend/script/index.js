@@ -70,6 +70,10 @@ function get_spotify_track(track) {
     var spotify_track = document.createElement('div')
     spotify_track.className = "spotify_track"
 
+    var track_left = document.createElement('div')
+    track_left.className = "track_left"
+    var track_details = document.createElement('div')
+
     title = document.createElement('h3')
     title.appendChild(document.createTextNode(track["title"]))
 
@@ -79,10 +83,12 @@ function get_spotify_track(track) {
     release_date = document.createElement('p')
     release_date.appendChild(document.createTextNode(track["release_date"]))
 
+    track_details.appendChild(title)
+    track_details.appendChild(release_date)
 
-    spotify_track.appendChild(title)
-    spotify_track.appendChild(cover)
-    spotify_track.appendChild(release_date)
+    track_left.appendChild(cover)
+    spotify_track.append(track_left)
+    spotify_track.append(track_details)
 
     return spotify_track
 }

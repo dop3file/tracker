@@ -90,14 +90,18 @@ header {
 }
 
 .spotify_tracks {
-    width: 30%;
+
 }
 
 .spotify_track {
 
 }
 
-.spotify_track > img{
+.spotify_track img {
     width: 80px;
     height: 80px;
+}
+
+.track_left {
+    display: inline-block;
 }
