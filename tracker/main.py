@@ -1,8 +1,8 @@
 import asyncio
 
+import uvicorn
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
@@ -16,6 +16,7 @@ from controllers.services.spotify import SpotifyAPI
 
 import config
 import exceptions
+from controllers.artist import get_artist
 
 
 app = FastAPI()
@@ -36,20 +37,10 @@ spotify = SpotifyAPI(config.SPOTIFY_ACCESS_TOKEN)
 @app.post('/')
 async def get_search_query(search_query: SearchQuery):
     try:
-        get_artist_ids_tasks = [
-            genius.get_artist_id(search_query.artist_name),
-            spotify.get_artist_id(search_query.artist_name)
-        ]
-        artist_ids = await asyncio.gather(*get_artist_ids_tasks)
-        tasks = [
-            genius.get_artist(artist_ids[0]),
-            spotify.get_artist_top_tracks(artist_ids[1])
-        ]
-        stats = await asyncio.gather(*tasks)
-        all_stats = AllStats(
-            genius=stats[0],
-            spotify_tracks=stats[1]
-        )
+        artist = await get_artist(genius, spotify, search_query.artist_name)
     except exceptions.SearchInvalidException as error_msg:
         return {"error": str(error_msg)}
-    return all_stats.json()
+    return artist.json()
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

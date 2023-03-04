@@ -26,6 +26,14 @@ class SpotifyTrackDetails(BaseModel):
     duration_ms: int
 
 
+class SpotifyArtist(BaseModel):
+    name: str
+    avatar_photo: str
+    popularity: int
+    followers_count: int
+    genres: list[str]
+
+
 class SpotifyTrack(BaseModel):
     id: str
     title: str
@@ -38,5 +46,6 @@ class SpotifyTrack(BaseModel):
 
 class AllStats(BaseModel):
     genius: GeniusArtist
+    spotify: SpotifyArtist
     spotify_tracks: list[SpotifyTrack]
     

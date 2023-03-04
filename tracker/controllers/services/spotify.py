@@ -3,7 +3,7 @@ from datetime import datetime
 import aiohttp
 import asyncio
 
-from schemas.service_schemas import SpotifyTrack, SpotifyTrackDetails
+from schemas.service_schemas import SpotifyTrack, SpotifyTrackDetails, SpotifyArtist
 
 
 class SpotifyAPI:
@@ -14,7 +14,7 @@ class SpotifyAPI:
             "Content-Type": "	application/x-www-form-urlencoded"
         }
 
-    async def get_artist_id(self, artist_name) -> int:
+    async def get_artist_id(self, artist_name: str) -> int:
         async with aiohttp.ClientSession() as session:
             url = f"https://api.spotify.com/v1/search"
             params = {
@@ -28,6 +28,20 @@ class SpotifyAPI:
                     return first_artist_id
                 except (KeyError, IndexError) as excp:
                     print(excp)
+
+    async def get_artist(self, artist_id: int):
+        async with aiohttp.ClientSession() as session:
+            url = f"https://api.spotify.com/v1/artists/{artist_id}"
+            async with session.get(url=url, headers=self.default_headers) as response:
+                response_json = await response.json()
+                artist = SpotifyArtist(
+                    name=response_json["name"],
+                    genres=response_json["genres"],
+                    followers_count=response_json["followers"]["total"],
+                    avatar_photo=response_json["images"][0]["url"],
+                    popularity=response_json["popularity"],
+                )
+                return artist
 
     async def get_artist_top_tracks(self, artist_id: int) -> list[SpotifyTrack]:
         async with aiohttp.ClientSession() as session:

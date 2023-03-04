@@ -16,6 +16,7 @@ class GeniusAPI:
             'access_token': self._token
         }
         
+        
     def is_featured_artist(self, artist_name: str) -> bool:
         for feature_symbol in GeniusAPI.FEATURE_SYMBOLS:
             if feature_symbol in artist_name:
@@ -50,6 +51,7 @@ class GeniusAPI:
                 artist_id = hit_without_feature["result"]["primary_artist"]["id"]
                 return artist_id
 
+
     async def get_artist(self, artist_id: int) -> GeniusArtist:
         async with aiohttp.ClientSession() as session:
             url = f"http://api.genius.com/artists/{artist_id}"
@@ -63,6 +65,8 @@ class GeniusAPI:
                     raise SearchInvalidException("Invalid search query")
                 artist = GeniusArtist.parse_obj(artist)
                 return artist
+
+
 
 
 
