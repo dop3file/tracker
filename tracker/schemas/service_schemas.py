@@ -16,6 +16,7 @@ class GeniusArtist(BaseModel):
     # photo
     header_photo: str = Field(alias="header_image_url")
     avatar_photo: str = Field(alias="image_url")
+    url: str
 
 
 class SpotifyTrackDetails(BaseModel):
@@ -48,4 +49,4 @@ class AllStats(BaseModel):
     genius: GeniusArtist
     spotify: SpotifyArtist
     spotify_tracks: list[SpotifyTrack]
-    
+    most_popular_words: list[str]

@@ -5,6 +5,8 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 
+from .database import engine
+
 Base = declarative_base()
 
 class User(Base):
@@ -19,5 +21,10 @@ class User(Base):
     def verify_password(self, password):
         pwhash = bcrypt.hashpw(password, self.password)
         return self.password == pwhash
+
+
+
+def create_db():
+    Base.metadata.create_all(bind=engine)
 
 

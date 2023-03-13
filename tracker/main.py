@@ -11,13 +11,14 @@ from schemas.service_schemas import AllStats
 from models.db_models import User
 from models.database import get_db
 
-from controllers.services.genius import GeniusAPI
+from controllers.services.genius import GeniusAPI, GeniusParser
 from controllers.services.spotify import SpotifyAPI
 
 import config
 import exceptions
 from controllers.artist import get_artist
-
+from models.database import SessionLocal
+from models.db_models import User
 
 app = FastAPI()
 
@@ -32,12 +33,14 @@ app.add_middleware(
 )
 
 genius = GeniusAPI(config.GENIUS_ACCESS_TOKEN)
+genius_parser = GeniusParser()
 spotify = SpotifyAPI(config.SPOTIFY_ACCESS_TOKEN)
+#db = SessionLocal()
 
 @app.post('/')
 async def get_search_query(search_query: SearchQuery):
     try:
-        artist = await get_artist(genius, spotify, search_query.artist_name)
+        artist = await get_artist(genius, spotify, genius_parser, search_query.artist_name)
     except exceptions.SearchInvalidException as error_msg:
         return {"error": str(error_msg)}
     return artist.json()

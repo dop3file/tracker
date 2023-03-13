@@ -4,6 +4,7 @@ import aiohttp
 import asyncio
 
 from schemas.service_schemas import SpotifyTrack, SpotifyTrackDetails, SpotifyArtist
+from exceptions import SearchInvalidException
 
 
 class SpotifyAPI:
@@ -27,21 +28,24 @@ class SpotifyAPI:
                     first_artist_id = response_json['artists']['items'][0]['id']
                     return first_artist_id
                 except (KeyError, IndexError) as excp:
-                    print(excp)
+                    raise SearchInvalidException
 
     async def get_artist(self, artist_id: int):
         async with aiohttp.ClientSession() as session:
             url = f"https://api.spotify.com/v1/artists/{artist_id}"
             async with session.get(url=url, headers=self.default_headers) as response:
                 response_json = await response.json()
-                artist = SpotifyArtist(
-                    name=response_json["name"],
-                    genres=response_json["genres"],
-                    followers_count=response_json["followers"]["total"],
-                    avatar_photo=response_json["images"][0]["url"],
-                    popularity=response_json["popularity"],
-                )
-                return artist
+                try:
+                    artist = SpotifyArtist(
+                        name=response_json["name"],
+                        genres=response_json["genres"],
+                        followers_count=response_json["followers"]["total"],
+                        avatar_photo=response_json["images"][0]["url"],
+                        popularity=response_json["popularity"],
+                    )
+                    return artist
+                except Exception as e:
+                    raise SearchInvalidException
 
     async def get_artist_top_tracks(self, artist_id: int) -> list[SpotifyTrack]:
         async with aiohttp.ClientSession() as session:
@@ -59,7 +63,7 @@ class SpotifyAPI:
                                 preview_url=track["preview_url"],
                                 explicit=track["explicit"],
                                 details=await self.get_track_details(track["id"])
-                            ) for track in tracks[:5]
+                            ) for track in tracks[:10]
                     ]
                     return tracks_items
                 except Exception as excp:

@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
+@font-face {
+    font-family: "Epic";
+    src: url("../static/TheRiftShop-Yzde4.ttf");
+}
+
 * {
     font-family: 'Lato', sans-serif;
 }
@@ -14,6 +19,55 @@
 header {
     width: 100%;
     display: flex;
+}
+
+.card_ {
+  width: 300px;
+  max-height: 200vh;
+  box-sizing: border-box;
+  padding: 2em;
+  font-family: Ubuntu;
+  border-radius: 25px;
+  color: white;
+  line-height: -100px;
+  box-shadow: 5px 5px 10px #ccc;
+  float: left;
+  margin-right: 1em;
+}
+
+.card_ > h1 {
+    font-size: 24px;
+}
+
+.card_.purple {
+  background: linear-gradient(150deg, #f731db, #4600f1 100%);
+}
+
+.card_.green {
+    background: linear-gradient(150deg, #89e8a8, #4600f1 100%);
+}
+
+#cover_select {
+    border: 10px solid pink;
+}
+
+#genres {
+    margin-top: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: 1em;
+}
+
+.genre {
+    flex: 1 0 15%;
+    background: hsla(30, 78%, 47%, 1);
+    background: linear-gradient(90deg, hsla(30, 78%, 47%, 1) 0%, hsla(326, 52%, 44%, 1) 100%);
+    color: white;
+    width: 200px;
+    border-radius: 7px;
+    padding: 10px;
+    margin-top: 5px;
+    margin-right: 5px;
 }
 
 .head {
@@ -66,11 +120,12 @@ header {
 
 #artist_profile {
     display: grid;
-    grid-template-columns: 30% 70%;
+    grid-template-columns: 40% 30% 30%;
     background-color: rgba(157, 205, 192, 0.5);
     padding: 1em;
     border-radius: 20px;
     box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+
 }
 
 .alternate_names {
@@ -89,19 +144,46 @@ header {
     padding: 10px;
 }
 
-.spotify_tracks {
+#popularity {
+    margin-top: 1em;
+    background-image: linear-gradient(
+        45deg,
+        hsl(55deg 100% 50%) 0%,
+        hsl(50deg 100% 59%) 11%,
+        hsl(45deg 100% 64%) 22%,
+        hsl(39deg 100% 68%) 33%,
+        hsl(33deg 100% 72%) 44%,
+        hsl(26deg 100% 75%) 56%,
+        hsl(19deg 100% 78%) 67%,
+        hsl(11deg 100% 81%) 78%,
+        hsl(6deg 73% 80%) 89%,
+        hsl(0deg 43% 78%) 100%
+    );
+    border-radius: 10px;
+    width: 18em;
+}
 
+#popularity > span {
+    font-family: 'Epic', 'Arial', serif;
+    font-size: 36px;
+    padding: 10px;
 }
 
 .spotify_track {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    padding: 5px;
+}
 
+.spotify_track h3 {
+    font-size: 14px;
 }
 
 .spotify_track img {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
 }
 
 .track_left {
-    display: inline-block;
+    display: inline-flex;
 }

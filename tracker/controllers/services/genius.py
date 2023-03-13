@@ -1,7 +1,9 @@
 import asyncio
 import aiohttp
+from collections import Counter
 
-import controllers.services.utils
+from bs4 import BeautifulSoup
+
 from schemas.service_schemas import GeniusArtist
 import config as config
 from exceptions import SearchInvalidException
@@ -67,6 +69,55 @@ class GeniusAPI:
                 return artist
 
 
+class GeniusParser:
+    async def get_track_links(self, artist_page_url: str) -> list[str]:
+        async with aiohttp.ClientSession() as session:
+            links = []
+            async with session.get(artist_page_url) as response:
+                soup = BeautifulSoup(await response.text(), "lxml")
+                for track in soup.find_all(class_="mini_card_grid-song"):
+                    link = track.find("a", class_="mini_card", href=True)
+                    links.append(link.get('href'))
+        return links
+
+    async def parse_text(self, track_url: str):
+        async with aiohttp.ClientSession() as session:
+            all_strings = []
+            async with session.get(track_url) as response:
+                soup = BeautifulSoup(await response.text(), "lxml")
+                text = soup.find(class_="Lyrics__Container-sc-1ynbvzw-6")
+                for string in text:
+                    if string.text and self.validate_text_string(string.text):
+                        formated_string = self.format_string(string.text)
+                        if formated_string:
+                            all_strings.append(formated_string)
+            return all_strings
+
+    def validate_text_string(self, string: str) -> bool:
+        ban_chars = ['[', '<']
+        for char in ban_chars:
+            if char in string:
+                return False
+        return True
+
+    def format_string(self, string: str) -> str:
+        return string.replace('(', '').replace(')', '').replace(',', '').replace('.', '')
+
+
+def get_most_popular_words(tracks_text: list[list[str]]) -> list:
+    all_texts: list[str] = [track for track in tracks_text for track in track]
+    all_words = []
+    for string in all_texts:
+        for word in string.split(' '):
+            if len(word) >= 5:
+                all_words.append(word)
+    counter = Counter(all_words)
+    return [word[0] for word in counter.most_common(15)]
+
+# genius = GeniusParser()
+# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+# tracks = asyncio.run(genius.parse_text("https://genius.com/Kishlak-music-lyrics"))
+# print(tracks)
 
 
 
