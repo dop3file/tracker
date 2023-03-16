@@ -83,6 +83,12 @@ function display_artist_info(artist) {
         genres.appendChild(genre)
     }
 
+    followers = document.createElement('div')
+    followers.id = "followers"
+    foll_text = document.createElement('span')
+    foll_text.appendChild( document.createTextNode(spotify_artist["followers_count"].toLocaleString() + " followers") )
+    followers.appendChild( foll_text )
+
     popularity = document.createElement('div')
     popularity.id = "popularity"
     popularity_text = "Popularity " + spotify_artist["popularity"].toString() + "/100"
@@ -101,8 +107,9 @@ function display_artist_info(artist) {
     for (const el of get_social_elements(genius)) {
         parent_col_left.appendChild(el)
     }
-    parent_col_left.append(genres)
+    parent_col_left.appendChild(genres)
     parent_col_left.appendChild(popularity)
+    parent_col_left.appendChild(followers)
     
 
 
@@ -117,11 +124,15 @@ function highlight_track(on) {
     }
 }
 
+function convert_ms_to_sec(ms) {
+    return ms / 1000 / 60
+}
 
 function get_spotify_track(track) {
     cover = document.createElement('img')
     cover.src = track["cover_url"]
     cover.id = "track_" + track["id"]
+    cover.className = "cover_artist"
 
     var spotify_track = document.createElement('div')
     spotify_track.className = "spotify_track"
@@ -155,8 +166,31 @@ function get_spotify_track(track) {
     track_details.appendChild(release_date)
 
     track_left.appendChild(cover)
+
+    var track_info = document.createElement('div')
+    track_info.className = "track_info"
+    lst = ['Танцевальность: ', 'Энергия: ', 'Громкость: ', 'Темп: ', 'Длительность: ']
+    idx = 0
+    for (const detail in track["details"]) {
+        p = document.createElement('span')
+        if (idx == 4) {
+            detail_ = convert_ms_to_sec(track["details"][detail]).toString().slice(0, 4) + "m"
+        }
+        else if (idx == 2) {
+            detail_ = track["details"][detail] + " db"
+        }
+        else {
+            detail_ = track["details"][detail]
+        }
+        
+        p.appendChild(document.createTextNode(lst[idx] + " " + detail_))
+        track_info.appendChild(p)
+        idx++
+    }
+
     spotify_track.append(track_left)
     spotify_track.append(track_details)
+    spotify_track.append(track_info)
 
     return spotify_track
 }
@@ -205,8 +239,10 @@ function hide_loader() {
     var loader = document.getElementById('loader')
     loader.className = 'hide-loader'
 
-    artist_profile = document.getElementById('artist_profile_hidden')
-    artist_profile.id = "artist_profile"
+    try {
+        artist_profile = document.getElementById('artist_profile_hidden')
+        artist_profile.id = "artist_profile"
+    } catch{;}
 }
 
 function clear_artist_info() {
@@ -226,15 +262,24 @@ function display_error(error_msg) {
 }
 
 async function getArtist() {
+    cat_off()
+    try {
+        artist_profile = document.getElementById('artist_profile_hidden')
+        artist_profile.id = "artist_profile"
+    } catch{;}
     clear_artist_info()
     display_loader()
     search_value = document.getElementById('search').value
+    if (search_value == "") {
+        location.reload()
+    }
     artist = await sendSearchRequest(search_value)
     try {
         artist = JSON.parse(artist)
     } catch {}
     console.log(artist)
     if (artist["error"] != undefined) {
+        hide_loader()
         clear_artist_info()
         return display_error(artist["error"])
     }
@@ -243,15 +288,24 @@ async function getArtist() {
 
     hide_loader()
     display_artist_info(artist)
+}
 
+function cat_off() {
+    cat = document.getElementById('cat_')
+    cat.style.display = "none";
 }
 
 function is_local_values() {
+
     if (localStorage.length > 0) {
+        try {
+            artist_profile = document.getElementById('artist_profile_hidden')
+            artist_profile.id = "artist_profile"
+        } catch{;}
+        cat_off()
         display_artist_info(JSON.parse(localStorage.getItem('artist')))
     }
 }
-
 
 function hotkey_router(e) {
     if (e.enter) {

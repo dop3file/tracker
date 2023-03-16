@@ -16,6 +16,13 @@
     flex-grow: 1;
 }
 
+#cat {
+    width: 50%;
+    max-width: 350px;
+    height: 50%;
+    max-height: 350px;
+}
+
 header {
     width: 100%;
     display: flex;
@@ -49,6 +56,11 @@ header {
 
 #cover_select {
     border: 10px solid pink;
+}
+
+.no-link, .no-link:hover {
+    text-decoration: none;
+    color: white;
 }
 
 #genres {
@@ -173,6 +185,46 @@ header {
     display: grid;
     grid-template-columns: 40% 60%;
     padding: 5px;
+}
+
+.track_info {
+    margin-top: 0.5em;
+    opacity: 0.7;
+    background-color: white;
+    border-radius: 15px;
+    color: black;
+    display: none;
+    width: 15em;
+}
+
+.track_info > span {
+    padding: 5px;
+}
+
+#followers { 
+    background: hsla(331, 75%, 42%, 1);
+    background: linear-gradient(90deg, hsla(331, 75%, 42%, 1) 0%, hsla(357, 40%, 71%, 1) 100%);
+    margin-top: 0.5em;
+    
+    font-size: 36px;
+    width: 10em;
+    border-radius: 10px;
+    display: flex;
+}
+
+#spotify_img {
+    width: 32px;
+    height: 32px;
+}
+
+#followers > span {
+    font-family: 'Epic';
+    padding: 10px;
+}
+
+.spotify_track:hover .track_info {
+    display: flex;
+    flex-direction: column;
 }
 
 .spotify_track h3 {

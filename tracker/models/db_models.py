@@ -22,9 +22,20 @@ class User(Base):
         pwhash = bcrypt.hashpw(password, self.password)
         return self.password == pwhash
 
+class Artist(Base):
+    __tablename__ = "artists"
+
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    genius_id = Column(Integer)
+    parse_date = Column(DateTime, server_default=func.now())
+    json = Column(Text)
 
 
 def create_db():
     Base.metadata.create_all(bind=engine)
+
+
+
+
 
 

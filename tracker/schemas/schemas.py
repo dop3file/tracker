@@ -13,6 +13,11 @@ class User(BaseModel):
 
 class SearchQuery(BaseModel):
     artist_name: str | None = None
+
+
+class UserAuth(BaseModel):
+    login: str
+    password: str
     
     
 
