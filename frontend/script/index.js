@@ -125,7 +125,10 @@ function highlight_track(on) {
 }
 
 function convert_ms_to_sec(ms) {
-    return ms / 1000 / 60
+    minutes = ~~(ms / 1000 / 60)
+    seconds = (ms - minutes * 60 * 1000)
+    console.log(seconds)
+    return minutes + seconds
 }
 
 function get_spotify_track(track) {

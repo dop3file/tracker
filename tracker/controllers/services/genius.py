@@ -17,14 +17,12 @@ class GeniusAPI:
         self.default_request_params = {
             'access_token': self._token
         }
-        
-        
+
     def is_featured_artist(self, artist_name: str) -> bool:
         for feature_symbol in GeniusAPI.FEATURE_SYMBOLS:
             if feature_symbol in artist_name:
                 return True
         return False
-
 
     async def get_artist_id(self, artist_name: str) -> int:
         async with aiohttp.ClientSession() as session:
@@ -53,7 +51,6 @@ class GeniusAPI:
                 artist_id = hit_without_feature["result"]["primary_artist"]["id"]
                 return artist_id
 
-
     async def get_artist(self, artist_id: int) -> GeniusArtist:
         async with aiohttp.ClientSession() as session:
             url = f"http://api.genius.com/artists/{artist_id}"
@@ -80,7 +77,7 @@ class GeniusParser:
                     links.append(link.get('href'))
         return links
 
-    async def parse_text(self, track_url: str):
+    async def parse_text(self, track_url: str) -> list[str]:
         async with aiohttp.ClientSession() as session:
             all_strings = []
             async with session.get(track_url) as response:
@@ -113,11 +110,5 @@ def get_most_popular_words(tracks_text: list[list[str]]) -> list:
                 all_words.append(word)
     counter = Counter(all_words)
     return [word[0] for word in counter.most_common(15)]
-
-# genius = GeniusParser()
-# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-# tracks = asyncio.run(genius.parse_text("https://genius.com/Kishlak-music-lyrics"))
-# print(tracks)
-
 
 

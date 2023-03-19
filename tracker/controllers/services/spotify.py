@@ -1,4 +1,5 @@
 from datetime import datetime
+from base64 import b64encode
 
 import aiohttp
 import asyncio
@@ -25,10 +26,12 @@ class SpotifyAPI:
             async with session.get(url=url, headers=self.default_headers, params=params) as response:
                 response_json = await response.json()
                 try:
-                    first_artist_id = response_json['artists']['items'][0]['id']
-                    return first_artist_id
-                except (KeyError, IndexError) as excp:
-                    raise SearchInvalidException
+                    artists = response_json['artists']
+                except KeyError:
+                    await self.refresh_token()
+                    return await self.get_artist_id(artist_name)
+                first_artist_id = artists['items'][0]['id']
+                return first_artist_id
 
     async def get_artist(self, artist_id: int):
         async with aiohttp.ClientSession() as session:
@@ -52,22 +55,19 @@ class SpotifyAPI:
             url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?market=ES"
             async with session.get(url=url, headers=self.default_headers) as response:
                 response_json = await response.json(content_type=None)
-                try:
-                    tracks = response_json["tracks"]
-                    tracks_items: list[SpotifyTrack] = [
-                        SpotifyTrack(
-                                id=track["id"],
-                                title=track["name"],
-                                release_date=track["album"]["release_date"],
-                                cover_url=track["album"]["images"][0]["url"],
-                                preview_url=track["preview_url"],
-                                explicit=track["explicit"],
-                                details=await self.get_track_details(track["id"])
-                            ) for track in tracks[:10]
-                    ]
-                    return tracks_items
-                except Exception as excp:
-                    print(excp)
+                tracks = response_json["tracks"]
+                tracks_items: list[SpotifyTrack] = [
+                    SpotifyTrack(
+                            id=track["id"],
+                            title=track["name"],
+                            release_date=track["album"]["release_date"],
+                            cover_url=track["album"]["images"][0]["url"],
+                            preview_url=track["preview_url"],
+                            explicit=track["explicit"],
+                            details=await self.get_track_details(track["id"])
+                        ) for track in tracks[:10]
+                ]
+                return tracks_items
 
     async def get_track_details(self, track_id: str) -> SpotifyTrackDetails:
         async with aiohttp.ClientSession() as session:
@@ -85,14 +85,14 @@ class SpotifyAPI:
             url = f"https://accounts.spotify.com/api/token"
             data = {
                 "grant_type": "refresh_token",
-                "client_id": "82337adcec69483abaf8057ec4c03635",
-                "refresh_token": self._token
+                "refresh_token": "AQC8go0eBcz7032k0cxHC9Y89zhGYk0zgcvYXP7tYpAX_kJUaJVAZWWXfQ-wGVgn2XxBh_WjZqp7od4PnrCiknp0OAIf-CbnvSYLN03uK4RFCc1h9Bo6Sl6KnQaHMJHe3Y4",
             }
-            async with session.get(url=url, headers=self.default_headers, data=data) as response:
-                return await response.json()
-
-# spotify = SpotifyAPI("")
-# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-# id = asyncio.run(spotify.get_artist_id("Markul"))
-# track = asyncio.run(spotify.get_artist_top_tracks(id))
-# print(asyncio.run(spotify.get_track_details(track[0].id)))
+            headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ODIzMzdhZGNlYzY5NDgzYWJhZjgwNTdlYzRjMDM2MzU6NzI3YTg0ZTQzMTgxNDdjMmEwYjY5MTRiOGU2ZmRjNzY='
+            }
+            async with session.post(url=url, headers=headers, data=data) as response:
+                json = await response.json()
+                print(json)
+                self._token = json["access_token"]
+                self.default_headers["Authorization"] = f"Bearer {self._token}"
