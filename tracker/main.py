@@ -3,12 +3,8 @@ import asyncio
 import uvicorn
 from fastapi import FastAPI, Response, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
 from schemas.schemas import SearchQuery, UserAuth
-from schemas.service_schemas import AllStats
-from models.db_models import User
 from models.database import get_db
 
 from controllers.services.genius import GeniusAPI, GeniusParser
@@ -18,7 +14,6 @@ import config
 import exceptions
 from controllers.artist import ArtistController
 from models.database import SessionLocal
-from models.db_models import User
 from logger import Logger
 
 app = FastAPI()
@@ -55,6 +50,7 @@ async def get_search_query(search_query: SearchQuery, db = Depends(get_db)):
         logger.log_info(error_msg)
         return {"error": "Server error"}
     return artist.json()
+
 
 @app.post('/login')
 async def login(user_auth: UserAuth):

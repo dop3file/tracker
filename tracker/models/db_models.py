@@ -9,6 +9,7 @@ from .database import engine
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -22,6 +23,7 @@ class User(Base):
         pwhash = bcrypt.hashpw(password, self.password)
         return self.password == pwhash
 
+
 class Artist(Base):
     __tablename__ = "artists"
 
@@ -34,4 +36,4 @@ class Artist(Base):
 def create_db():
     Base.metadata.create_all(bind=engine)
 
-
+create_db()
