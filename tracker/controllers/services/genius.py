@@ -1,4 +1,6 @@
 import asyncio
+import os
+
 import aiohttp
 from collections import Counter
 
@@ -82,7 +84,7 @@ class GeniusParser:
             all_strings = []
             async with session.get(track_url) as response:
                 soup = BeautifulSoup(await response.text(), "lxml")
-                text = soup.find(class_="Lyrics__Container-sc-1ynbvzw-6")
+                text = soup.find(class_="Lyrics__Container-sc-1ynbvzw-5")
                 for string in text:
                     if string.text and self.validate_text_string(string.text):
                         formated_string = self.format_string(string.text)
@@ -110,5 +112,6 @@ def get_most_popular_words(tracks_text: list[list[str]]) -> list:
                 all_words.append(word)
     counter = Counter(all_words)
     return [word[0] for word in counter.most_common(15)]
+
 
 

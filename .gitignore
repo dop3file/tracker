@@ -5,6 +5,8 @@ config
 __pycache__/
 *.py[cod]
 *$py.class
+.DS_store
+db.db
 
 # C extensions
 *.so

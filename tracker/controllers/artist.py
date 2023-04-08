@@ -52,7 +52,8 @@ class ArtistController:
             self.spotify.get_artist_top_tracks(spotify_artist_id),
             *tracks_text_tasks
         ]
-        global_tasks = await asyncio.gather(*stats_tasks)
+        stats_tasks = await asyncio.gather(*stats_tasks)
+
         most_popular_words = get_most_popular_words(stats_tasks[1:])
         all_stats = AllStats(
             genius=genius_artist,

@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from base64 import b64encode
 
@@ -85,14 +86,13 @@ class SpotifyAPI:
             url = f"https://accounts.spotify.com/api/token"
             data = {
                 "grant_type": "refresh_token",
-                "refresh_token": "AQC8go0eBcz7032k0cxHC9Y89zhGYk0zgcvYXP7tYpAX_kJUaJVAZWWXfQ-wGVgn2XxBh_WjZqp7od4PnrCiknp0OAIf-CbnvSYLN03uK4RFCc1h9Bo6Sl6KnQaHMJHe3Y4",
+                "refresh_token": os.environ["SPOTIFY_REFRESH"],
             }
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Basic ODIzMzdhZGNlYzY5NDgzYWJhZjgwNTdlYzRjMDM2MzU6NzI3YTg0ZTQzMTgxNDdjMmEwYjY5MTRiOGU2ZmRjNzY='
+                'Authorization': os.environ["SPOTIFY_AUTH"]
             }
             async with session.post(url=url, headers=headers, data=data) as response:
                 json = await response.json()
-                print(json)
                 self._token = json["access_token"]
                 self.default_headers["Authorization"] = f"Bearer {self._token}"
