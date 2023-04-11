@@ -35,5 +35,3 @@ class Artist(Base):
 
 def create_db():
     Base.metadata.create_all(bind=engine)
-
-create_db()
